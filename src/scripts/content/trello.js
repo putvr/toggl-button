@@ -1,11 +1,6 @@
 'use strict';
 /* global createTag */
 
-const getProject = () => {
-  const project = $('.board-header-btn-text');
-  return project ? project.textContent.trim() : '';
-};
-
 togglbutton.render(
   '.window-header:not(.toggl)',
   { observe: true },
@@ -25,11 +20,27 @@ togglbutton.render(
       return description ? description.textContent.trim() : '';
     };
 
+    const getDescriptionText = () => {
+      const task = $('.description-content > .current');
+      return task ? task.textContent.trim() : '';
+    };
+
+    const getProject = () => {
+      const projectName = getDescriptionText().split(' ').filter(word => word[0] === '@')[0];
+      return projectName ? projectName.slice(1) : '';
+    };
+
+    const getTags = () => {
+      const tags = getDescriptionText().split(' ').filter(word => word[0] === '#');
+      return tags ? tags.map(tag => tag.slice(1)) : '';
+    };
+
     const container = createTag('div', 'button-link trello-tb-wrapper');
     const link = togglbutton.createTimerLink({
       className: 'trello',
       description: getDescription,
       projectName: getProject,
+      tags: getTags,
       container: '.window-wrapper'
     });
 
@@ -58,6 +69,11 @@ togglbutton.render(
     const getTaskText = () => {
       const task = $('.checklist-item-details-text', elem);
       return task ? task.textContent.trim() : '';
+    };
+
+    const getProject = () => {
+      const projectName = getTaskText().split(' ').filter(word => word[0] === '@');
+      return projectName ? projectName[0] : '';
     };
 
     const getDescription = () => {
